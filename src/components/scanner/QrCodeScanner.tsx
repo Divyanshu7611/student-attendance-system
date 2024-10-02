@@ -13,7 +13,7 @@ const QrCodeScanner: React.FC<QrCodeScannerProps> = ({ onScan }) => {
     }
   };
 
-  const handleError = (err: any) => {
+  const handleError = (err: Error) => {
     console.error(err); // Handle errors if needed
   };
 
