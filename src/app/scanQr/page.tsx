@@ -94,14 +94,21 @@ const ScanPage = () => {
   const [scanResult, setScanResult] = useState<string | null>(null);
   const [attendanceMessage, setAttendanceMessage] = useState<string | null>(null);
   const [QrReader, setQrReader] = useState<React.ComponentType<QrReaderProps> | null>(null);
+  const [loading, setLoading] = useState(true);  // Loading state to manage dynamic import
 
   useEffect(() => {
     const dynamicImport = async () => {
-      // Dynamically import the QrReader component and extract it
-      const { QrReader: QrReaderComponent } = await import("react-qr-reader");
+      try {
+        // Dynamically import the QrReader component and extract it
+        const { QrReader: QrReaderComponent } = await import("react-qr-reader");
 
-      // TypeScript should understand QrReaderComponent is of type ComponentType<QrReaderProps>
-      setQrReader(QrReaderComponent as unknown as React.ComponentType<QrReaderProps>);
+        // TypeScript should understand QrReaderComponent is of type ComponentType<QrReaderProps>
+        setQrReader(QrReaderComponent as unknown as React.ComponentType<QrReaderProps>);
+        setLoading(false);  // Set loading to false once the component is loaded
+      } catch (error) {
+        console.error("Error loading QR Reader:", error);
+        setLoading(false);  // Set loading to false even in case of error
+      }
     };
     dynamicImport();
   }, []);
@@ -129,6 +136,10 @@ const ScanPage = () => {
   const handleError = (error: Error) => {
     console.error("QR Code Scan Error:", error);
   };
+
+  if (loading) {
+    return <div>Loading QR Reader...</div>; // Loading indicator while the component is being imported
+  }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-slate-600 text-white p-4">
