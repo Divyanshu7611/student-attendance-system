@@ -82,23 +82,26 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-// Define the props for QrReader if they are not available
-interface QrReaderProps {
+// Define the props for QrReader based on the import
+type QrReaderProps = {
   delay: number;
   onError: (error: Error) => void;
   onScan: (data: string | null) => void;
   style: React.CSSProperties;
-}
+};
 
 const ScanPage = () => {
   const [scanResult, setScanResult] = useState<string | null>(null);
   const [attendanceMessage, setAttendanceMessage] = useState<string | null>(null);
-  const [QrReader, setQrReader] = useState<any>(null);
+  const [QrReader, setQrReader] = useState<React.ComponentType<QrReaderProps> | null>(null);
 
   useEffect(() => {
     const dynamicImport = async () => {
+      // Dynamically import the QrReader component and extract it
       const { QrReader: QrReaderComponent } = await import("react-qr-reader");
-      setQrReader(() => QrReaderComponent);
+
+      // TypeScript should understand QrReaderComponent is of type ComponentType<QrReaderProps>
+      setQrReader(QrReaderComponent as unknown as React.ComponentType<QrReaderProps>);
     };
     dynamicImport();
   }, []);
@@ -133,12 +136,10 @@ const ScanPage = () => {
 
       {QrReader && (
         <QrReader
-          {...({
-            delay: 300, // Assert delay here
-            onError: handleError,
-            onScan: handleScan,
-            style: { width: "100%", maxWidth: "400px" },
-          } as QrReaderProps)} // Type assertion
+          delay={300}
+          onError={handleError}
+          onScan={handleScan}
+          style={{ width: "100%", maxWidth: "400px" }}
         />
       )}
 
