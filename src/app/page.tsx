@@ -248,16 +248,13 @@ export default function Home() {
   };
 
   return (
-    <div className="flex items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)] min-w-screen bg-slate-600 text-white">
+    <div className="flex items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)] min-w-screen bg-gray-900 text-white">
       {formData ? (
         <div className="text-center mx-auto">
-          <h2 className="text-2xl">Thank You for Submitting!</h2>
-          <p className="mt-2">Here are the details you submitted:</p>
-          <ul className="list-disc mt-4 text-start">
-            <li>Email: {formData.email}</li>
-            <li>Name: {formData.name}</li>
-            <li>Roll No: {formData.rollNo}</li>
-          </ul>
+          <h2 className="text-2xl">Thank You for Registering!</h2>
+          
+      
+          <p className="mt-5 text-cyan-300">Please Download the QrCode For the Attendence</p>
 
           {qrCodeUrl && (
             <div className="mt-8">
@@ -268,10 +265,19 @@ export default function Home() {
                 className="mx-auto mt-2"
               />
               <a href={qrCodeUrl} download="student_qr_code.png">
-                <button className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                <button className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                   Download QR Code
                 </button>
               </a>
+              <p className="mt-10">Here are the details you submitted:</p>
+              <div className="mx-auto border-2 border-white rounded-xl flex justify-center items-center mt-3">
+                <div className="flex flex-col justify-start items-start text-cyan-300">
+                <p><span className="text-gray-100">Email:</span> {formData.email}</p>
+            <p><span className="text-gray-100">Name:</span> {formData.name}</p>
+            <p><span className="text-gray-100">Roll No: </span>{formData.rollNo}</p>
+                </div>
+           
+          </div>
             </div>
           )}
         </div>

@@ -1,4 +1,4 @@
-//   "use client";
+// "use client";
 // import { useState } from "react";
 // import { Input } from "@/components/ui/input";
 // import { Label } from "@/components/ui/label";
@@ -22,6 +22,7 @@
 //     branch: string;
 //     year: string;
 //     phone: string;
+//     userID: string;
 //   }) => void;
 // }
 
@@ -35,7 +36,6 @@
 //     year: "I", // Default year
 //     phone: "",
 //   });
-
 
 //   const [errors, setErrors] = useState({
 //     branch: "",
@@ -74,7 +74,7 @@
 //   const validateForm = () => {
 //     let valid = true;
 //     const newErrors = { branch: "", year: "" };
-  
+
 //     if (!formData.branch) {
 //       newErrors.branch = "Please select a branch.";
 //       valid = false;
@@ -83,53 +83,50 @@
 //       newErrors.year = "Please select a year.";
 //       valid = false;
 //     }
-  
+
 //     setErrors(newErrors);
 //     console.log("Validation errors:", newErrors);  // Check the error log
 //     return valid;
 //   };
-  
+
 //   const [isSubmitting, setIsSubmitting] = useState(false);
-//   const [message, setMessage] = useState("");
+
 //   const handleSubmit = async (e: React.FormEvent) => {
 //     e.preventDefault();
-    
+
 //     console.log("Form submitted");
-  
+
 //     if (validateForm()) {
 //       setIsSubmitting(true);
-  
+
 //       // Log the form data to ensure it's correct before sending
 //       console.log("Form data to submit:", formData); // Log form data
-  
-    
-//         try {
-//           const response = await axios.post("/api/FormSubmit", formData, {
-//             headers: {
-//               "Content-Type": "application/json",
-//             },
-//           });
-  
-//           if (response) {
-//             toast.success("Form submitted successfully!");
-//             if (isFormData && onFormSubmit) {
-//                   onFormSubmit(formData); // Send form data to parent component
-//                  } else {
-//                    console.log(formData); // Log form data
-//                     }
+
+//       try {
+//         const response = await axios.post("/api/FormSubmit", formData, {
+//           headers: {
+//             "Content-Type": "application/json",
+//           },
+//         });
+
+//         if (response) {
+//           toast.success("Form submitted successfully!");
+//           if (isFormData && onFormSubmit) {
+//             onFormSubmit({...formData,userID: response.data._id,}); // Send form data to parent component
 //           } else {
-//             toast.error("Failed to submit form. Please try again.");
+//             console.log(formData); // Log form data
 //           }
-//         } catch (error) {
-//           console.error("Error during submission:", error);
-//           toast.error("An error occurred. Please try again.");
-//         } finally {
-//           setIsSubmitting(false);
+//         } else {
+//           toast.error("Failed to submit form. Please try again.");
 //         }
-    
+//       } catch (error) {
+//         console.error("Error during submission:", error);
+//         toast.error("An error occurred. Please try again.");
+//       } finally {
+//         setIsSubmitting(false);
+//       }
 //     }
 //   };
-  
 
 //   return (
 //     <form
@@ -258,11 +255,9 @@
 //       >
 //         {isSubmitting ? "Submitting..." : "Submit"}
 //       </Button>
-//       {message && <p>{message}</p>}
 //     </form>
 //   );
 // }
-
 
 
 "use client";
@@ -279,6 +274,7 @@ import {
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 
+
 interface FormProps {
   isFormData: boolean;
   onFormSubmit?: (data: {
@@ -288,7 +284,7 @@ interface FormProps {
     universityRoll: string;
     branch: string;
     year: string;
-    phone: string;
+    phone: string;  
     userID: string;
   }) => void;
 }
@@ -305,6 +301,11 @@ export function Form({ isFormData, onFormSubmit }: FormProps) {
   });
 
   const [errors, setErrors] = useState({
+    email: "",
+    name: "",
+    rollNo: "",
+    universityRoll: "",
+    phone: "",
     branch: "",
     year: "",
   });
@@ -340,19 +341,59 @@ export function Form({ isFormData, onFormSubmit }: FormProps) {
 
   const validateForm = () => {
     let valid = true;
-    const newErrors = { branch: "", year: "" };
+    const newErrors = { ...errors };
+
+    // Check if required fields are filled
+    if (!formData.email) {
+      newErrors.email = "Email is required.";
+      valid = false;
+    } else {
+      newErrors.email = "";
+    }
+
+    if (!formData.name) {
+      newErrors.name = "Name is required.";
+      valid = false;
+    } else {
+      newErrors.name = "";
+    }
+
+    if (!formData.rollNo) {
+      newErrors.rollNo = "Roll Number is required.";
+      valid = false;
+    } else {
+      newErrors.rollNo = "";
+    }
+
+    if (!formData.universityRoll) {
+      newErrors.universityRoll = "University Roll Number is required.";
+      valid = false;
+    } else {
+      newErrors.universityRoll = "";
+    }
+
+    if (!formData.phone) {
+      newErrors.phone = "Phone Number is required.";
+      valid = false;
+    } else {
+      newErrors.phone = "";
+    }
 
     if (!formData.branch) {
       newErrors.branch = "Please select a branch.";
       valid = false;
+    } else {
+      newErrors.branch = "";
     }
+
     if (!formData.year) {
       newErrors.year = "Please select a year.";
       valid = false;
+    } else {
+      newErrors.year = "";
     }
 
     setErrors(newErrors);
-    console.log("Validation errors:", newErrors);  // Check the error log
     return valid;
   };
 
@@ -361,13 +402,8 @@ export function Form({ isFormData, onFormSubmit }: FormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log("Form submitted");
-
     if (validateForm()) {
       setIsSubmitting(true);
-
-      // Log the form data to ensure it's correct before sending
-      console.log("Form data to submit:", formData); // Log form data
 
       try {
         const response = await axios.post("/api/FormSubmit", formData, {
@@ -379,9 +415,9 @@ export function Form({ isFormData, onFormSubmit }: FormProps) {
         if (response) {
           toast.success("Form submitted successfully!");
           if (isFormData && onFormSubmit) {
-            onFormSubmit({...formData,userID: response.data._id,}); // Send form data to parent component
+            onFormSubmit({ ...formData, userID: response.data._id });
           } else {
-            console.log(formData); // Log form data
+            console.log(formData);
           }
         } else {
           toast.error("Failed to submit form. Please try again.");
@@ -401,16 +437,28 @@ export function Form({ isFormData, onFormSubmit }: FormProps) {
       className="flex flex-col gap-4 items-center justify-center my-auto w-full max-w-lg bg-gray-50 p-6 rounded-md shadow-lg mx-auto"
     >
       <Toaster />
-      <h1 className="text-blue-900 font-bold">DevDays: Web Edition</h1>
+      <div className="flex justify-start items-center w-full">
+
+      <div className="flex justify-center items-center gap-5">
+        <img src="/DSCRTU.jpg" className="lg:w-20 lg:h-20 rounded-full w-10 h-10"/>
+        <div className="flex flex-col">
+
+        <h1 className="text-blue-900 font-bold underline text-xs lg:text-xl">Developer Student Club - RTU</h1>
+      <h1 className="text-blue-900 font-bold text-center text-xs lg:text-lg">DevDays: Web Edition</h1>
+        </div>
+
+      </div>
+      </div>
 
       <div className="grid w-full items-center gap-2">
         <Label htmlFor="email" className="font-medium text-gray-800">
           Email
         </Label>
+        {errors.email && <p className="text-red-600">{errors.email}</p>}
         <Input
           type="email"
           id="email"
-          placeholder="Email"
+          placeholder="e.g (dsc@gmail.com)"
           value={formData.email}
           onChange={handleChange}
           className="text-gray-800 border-gray-500"
@@ -421,10 +469,11 @@ export function Form({ isFormData, onFormSubmit }: FormProps) {
         <Label htmlFor="name" className="font-medium text-gray-800">
           Name
         </Label>
+        {errors.name && <p className="text-red-600">{errors.name}</p>}
         <Input
           type="text"
           id="name"
-          placeholder="Divyanshu Sharma"
+          placeholder="e.g (Divyanshu Sharma)"
           value={formData.name}
           onChange={handleChange}
           className="text-gray-800 border-gray-500"
@@ -435,10 +484,11 @@ export function Form({ isFormData, onFormSubmit }: FormProps) {
         <Label htmlFor="rollNo" className="font-medium text-gray-800">
           College Roll No
         </Label>
+        {errors.rollNo && <p className="text-red-600">{errors.rollNo}</p>}
         <Input
           type="text"
           id="rollNo"
-          placeholder="22/285"
+          placeholder="e.g (22/285)"
           value={formData.rollNo}
           onChange={handleChange}
           className="text-gray-800 border-gray-500"
@@ -449,10 +499,11 @@ export function Form({ isFormData, onFormSubmit }: FormProps) {
         <Label htmlFor="phone" className="font-medium text-gray-800">
           Mobile Number
         </Label>
+        {errors.phone && <p className="text-red-600">{errors.phone}</p>}
         <Input
           type="number"
           id="phone"
-          placeholder="9999999999"
+          placeholder="e.g (9999999999)"
           value={formData.phone}
           onChange={handleChange}
           className="text-gray-800 border-gray-500"
@@ -463,10 +514,11 @@ export function Form({ isFormData, onFormSubmit }: FormProps) {
         <Label htmlFor="universityRoll" className="font-medium text-gray-800">
           University Roll No
         </Label>
+        {errors.universityRoll && <p className="text-red-600">{errors.universityRoll}</p>}
         <Input
           type="text"
           id="universityRoll"
-          placeholder="22EUCCS033"
+          placeholder="e.g (22EUCCS033)"
           value={formData.universityRoll}
           onChange={handleChange}
           className="text-gray-800 border-gray-500"
@@ -518,9 +570,9 @@ export function Form({ isFormData, onFormSubmit }: FormProps) {
         type="submit"
         variant="outline"
         disabled={isSubmitting}
-        className="text-white bg-blue-600 hover:bg-blue-700 w-full max-w-sm"
+        className="text-white bg-gray-700 hover:bg-gray-900 hover:text-white w-full max-w-sm"
       >
-        {isSubmitting ? "Submitting..." : "Submit"}
+        {isSubmitting ? "Registering..." : "Register"}
       </Button>
     </form>
   );
