@@ -1,6 +1,6 @@
 // models/Form.ts
 
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Document } from "mongoose";
 
 export interface IForm extends Document {
   email: string;
