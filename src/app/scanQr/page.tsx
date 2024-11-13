@@ -6,11 +6,18 @@
 //   const [scanResult, setScanResult] = useState<string | null>(null);
 //   const [attendanceMessage, setAttendanceMessage] = useState<string | null>(null);
 //   const [QrReader, setQrReader] = useState<any>(null);
+//   const [loadingQrReader, setLoadingQrReader] = useState<boolean>(true);
 
 //   useEffect(() => {
 //     const dynamicImport = async () => {
-//       const { QrReader: QrReaderComponent } = await import("react-qr-reader");
-//       setQrReader(QrReaderComponent);
+//       try {
+//         const { QrReader: QrReaderComponent } = await import("react-qr-reader");
+//         setQrReader(() => QrReaderComponent); // Use function syntax to set component
+//       } catch (error) {
+//         console.error("Failed to load QR reader component:", error);
+//       } finally {
+//         setLoadingQrReader(false);
+//       }
 //     };
 //     dynamicImport();
 //   }, []);
@@ -18,11 +25,12 @@
 //   const handleScan = async (data: string | null) => {
 //     if (data) {
 //       setScanResult(data);
-//       const scannedData = JSON.parse(data);
 
 //       try {
-//         // Send PUT request to update attendance
-//         const response = await axios.put("/api/SubmitForm/markAttendance", {
+//         const scannedData = JSON.parse(data); // Parse QR code data
+
+//         // Send PUT request to mark attendance
+//         const response = await axios.put<{ message: string }>("/api/SubmitForm/markAttendance", {
 //           email: scannedData.email,
 //           isPresent: true,
 //         });
@@ -37,14 +45,24 @@
 
 //   const handleError = (error: Error) => {
 //     console.error("QR Code Scan Error:", error);
+//     setAttendanceMessage("An error occurred while scanning. Please try again.");
 //   };
 
 //   return (
 //     <div className="flex flex-col items-center justify-center min-h-screen bg-slate-600 text-white p-4">
 //       <h1 className="text-2xl mb-4">QR Code Scanner</h1>
 
-//       {QrReader && (
-//         <QrReader delay={300} onError={handleError} onScan={handleScan} style={{ width: "100%", maxWidth: "400px" }} />
+//       {loadingQrReader ? (
+//         <p>Loading QR scanner...</p>
+//       ) : QrReader ? (
+//         <QrReader
+//           delay={300}
+//           onError={handleError}
+//           onScan={handleScan}
+//           style={{ width: "100%", maxWidth: "400px" }}
+//         />
+//       ) : (
+//         <p>Failed to load QR scanner. Please refresh the page or try again later.</p>
 //       )}
 
 //       {scanResult && (
@@ -64,22 +82,23 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+// Define the props for QrReader if they are not available
+interface QrReaderProps {
+  delay: number;
+  onError: (error: Error) => void;
+  onScan: (data: string | null) => void;
+  style: React.CSSProperties;
+}
+
 const ScanPage = () => {
   const [scanResult, setScanResult] = useState<string | null>(null);
   const [attendanceMessage, setAttendanceMessage] = useState<string | null>(null);
   const [QrReader, setQrReader] = useState<any>(null);
-  const [loadingQrReader, setLoadingQrReader] = useState<boolean>(true);
 
   useEffect(() => {
     const dynamicImport = async () => {
-      try {
-        const { QrReader: QrReaderComponent } = await import("react-qr-reader");
-        setQrReader(() => QrReaderComponent); // Use function syntax to set component
-      } catch (error) {
-        console.error("Failed to load QR reader component:", error);
-      } finally {
-        setLoadingQrReader(false);
-      }
+      const { QrReader: QrReaderComponent } = await import("react-qr-reader");
+      setQrReader(() => QrReaderComponent);
     };
     dynamicImport();
   }, []);
@@ -87,12 +106,11 @@ const ScanPage = () => {
   const handleScan = async (data: string | null) => {
     if (data) {
       setScanResult(data);
+      const scannedData = JSON.parse(data);
 
       try {
-        const scannedData = JSON.parse(data); // Parse QR code data
-
-        // Send PUT request to mark attendance
-        const response = await axios.put<{ message: string }>("/api/SubmitForm/markAttendance", {
+        // Send PUT request to update attendance
+        const response = await axios.put("/api/SubmitForm/markAttendance", {
           email: scannedData.email,
           isPresent: true,
         });
@@ -107,24 +125,21 @@ const ScanPage = () => {
 
   const handleError = (error: Error) => {
     console.error("QR Code Scan Error:", error);
-    setAttendanceMessage("An error occurred while scanning. Please try again.");
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-slate-600 text-white p-4">
       <h1 className="text-2xl mb-4">QR Code Scanner</h1>
 
-      {loadingQrReader ? (
-        <p>Loading QR scanner...</p>
-      ) : QrReader ? (
+      {QrReader && (
         <QrReader
-          delay={300}
-          onError={handleError}
-          onScan={handleScan}
-          style={{ width: "100%", maxWidth: "400px" }}
+          {...({
+            delay: 300, // Assert delay here
+            onError: handleError,
+            onScan: handleScan,
+            style: { width: "100%", maxWidth: "400px" },
+          } as QrReaderProps)} // Type assertion
         />
-      ) : (
-        <p>Failed to load QR scanner. Please refresh the page or try again later.</p>
       )}
 
       {scanResult && (
