@@ -94,6 +94,7 @@ const ScanPage = () => {
       return true;
     } catch (e) {
       return false;
+      console.log("Error occured",e)
     }
   };
 
