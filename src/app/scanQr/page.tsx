@@ -55,6 +55,7 @@
 //       {loadingQrReader ? (
 //         <p>Loading QR scanner...</p>
 //       ) : QrReader ? (
+        
 //         <QrReader
 //           delay={300}
 //           onError={handleError}
@@ -78,49 +79,26 @@
 // export default ScanPage;
 
 
+
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { QrReader } from "react-qr-reader";
 import axios from "axios";
 
-// Define the props for QrReader based on the import
-type QrReaderProps = {
-  delay: number;
-  onError: (error: Error) => void;
-  onScan: (data: string | null) => void;
-  style: React.CSSProperties;
-};
-
 const ScanPage = () => {
-  const [scanResult, setScanResult] = useState<string | null>(null);
   const [attendanceMessage, setAttendanceMessage] = useState<string | null>(null);
-  const [QrReader, setQrReader] = useState<React.ComponentType<QrReaderProps> | null>(null);
-  const [loading, setLoading] = useState(true);  // Loading state to manage dynamic import
+  const router = useRouter();
 
-  useEffect(() => {
-    const dynamicImport = async () => {
-      try {
-        // Dynamically import the QrReader component and extract it
-        const { QrReader: QrReaderComponent } = await import("react-qr-reader");
-
-        // TypeScript should understand QrReaderComponent is of type ComponentType<QrReaderProps>
-        setQrReader(QrReaderComponent as unknown as React.ComponentType<QrReaderProps>);
-        setLoading(false);  // Set loading to false once the component is loaded
-      } catch (error) {
-        console.error("Error loading QR Reader:", error);
-        setLoading(false);  // Set loading to false even in case of error
-      }
-    };
-    dynamicImport();
-  }, []);
-
-  const handleScan = async (data: string | null) => {
-    if (data) {
-      setScanResult(data);
-      const scannedData = JSON.parse(data);
+  const handleScan = async (result: any, error: any) => {
+    if (result) {
+      const data = result.getText(); // Get the scanned QR data
 
       try {
-        // Send PUT request to update attendance
-        const response = await axios.put("/api/SubmitForm/markAttendance", {
+        const scannedData = JSON.parse(data); // Parse QR code data
+
+        // Send PUT request to mark attendance
+        const response = await axios.put<{ message: string }>("/api/SubmitForm/markAttendance", {
           email: scannedData.email,
           isPresent: true,
         });
@@ -131,32 +109,28 @@ const ScanPage = () => {
         setAttendanceMessage("Error marking attendance.");
       }
     }
-  };
 
-  const handleError = (error: Error) => {
-    console.error("QR Code Scan Error:", error);
+    if (error) {
+      console.error("QR Code Scan Error:", error);
+      setAttendanceMessage("An error occurred while scanning. Please try again.");
+    }
   };
-
-  if (loading) {
-    return <div>Loading QR Reader...</div>; // Loading indicator while the component is being imported
-  }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-slate-600 text-white p-4">
       <h1 className="text-2xl mb-4">QR Code Scanner</h1>
 
-      {QrReader && (
+      <div className="flex justify-center items-center h-[75vh]">
         <QrReader
-          delay={300}
-          onError={handleError}
-          onScan={handleScan}
-          style={{ width: "100%", maxWidth: "400px" }}
+          onResult={handleScan} // Pass the handleScan function directly
+          constraints={{ facingMode: "environment" }} // Use the back camera
+          className="w-72 h-w-72 border-2 object-cover"
+          videoStyle={{ objectFit: "cover" }}
         />
-      )}
+      </div>
 
-      {scanResult && (
+      {attendanceMessage && (
         <div className="text-center mt-8">
-          <p>Scanned Data: {scanResult}</p>
           <p>{attendanceMessage}</p>
         </div>
       )}
