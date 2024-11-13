@@ -525,7 +525,7 @@ export function Form({ isFormData, onFormSubmit }: FormProps) {
   };
   
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const [message, setMessage] = useState("");
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
