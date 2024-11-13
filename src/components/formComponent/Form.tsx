@@ -289,6 +289,7 @@ interface FormProps {
     branch: string;
     year: string;
     phone: string;
+    userID: string;
   }) => void;
 }
 
@@ -378,7 +379,7 @@ export function Form({ isFormData, onFormSubmit }: FormProps) {
         if (response) {
           toast.success("Form submitted successfully!");
           if (isFormData && onFormSubmit) {
-            onFormSubmit(formData); // Send form data to parent component
+            onFormSubmit({...formData,userID: response.data._id,}); // Send form data to parent component
           } else {
             console.log(formData); // Log form data
           }

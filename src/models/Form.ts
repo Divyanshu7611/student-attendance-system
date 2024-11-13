@@ -1,4 +1,4 @@
-// models/Form.ts
+
 
 import mongoose, { Document } from "mongoose";
 
@@ -10,6 +10,7 @@ export interface IForm extends Document {
   branch: string;
   year: string;
   phone: string;
+  isPresent:boolean;
 }
 
 const formSchema = new mongoose.Schema({
@@ -20,6 +21,7 @@ const formSchema = new mongoose.Schema({
   branch: { type: String, required: true },
   year: { type: String, required: true },
   phone: { type: String, required: true },
+  isPresent:{type:String,default:false}
 });
 
 const Form = mongoose.models.Form || mongoose.model<IForm>("Form", formSchema);

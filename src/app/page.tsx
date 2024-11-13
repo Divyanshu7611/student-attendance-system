@@ -225,6 +225,7 @@ interface FormData {
   branch: string;
   year: string;
   phone: string;
+  userID:string;
 }
 
 export default function Home() {
@@ -234,11 +235,12 @@ export default function Home() {
   const handleFormSubmit = async (data: FormData) => {
     console.log("Form Data Received in Parent:", data);
     setFormData(data); // Update state with submitted data
-
+    console.log("user ID is",data.userID)
     const qrData = JSON.stringify({
       email: data.email,
       name: data.name,
       rollNo: data.rollNo,
+      userID:data.userID
     });
 
     const qrCode = await QRCode.toDataURL(qrData);
