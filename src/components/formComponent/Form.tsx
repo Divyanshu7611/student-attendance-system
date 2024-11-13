@@ -504,6 +504,8 @@ export function Form({ isFormData, onFormSubmit }: FormProps) {
           type="number"
           id="phone"
           placeholder="e.g (9999999999)"
+          maxLength={10}
+          minLength={10}
           value={formData.phone}
           onChange={handleChange}
           className="text-gray-800 border-gray-500"
