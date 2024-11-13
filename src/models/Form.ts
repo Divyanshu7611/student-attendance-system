@@ -21,7 +21,7 @@ const formSchema = new mongoose.Schema({
   branch: { type: String, required: true },
   year: { type: String, required: true },
   phone: { type: String, required: true },
-  isPresent:{type:String,default:false}
+  isPresent:{type:Boolean,default:false}
 });
 
 const Form = mongoose.models.Form || mongoose.model<IForm>("Form", formSchema);
