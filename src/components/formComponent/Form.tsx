@@ -281,7 +281,6 @@ interface FormProps {
     email: string;
     name: string;
     rollNo: string;
-    universityRoll: string;
     branch: string;
     year: string;
     phone: string;  
@@ -294,7 +293,6 @@ export function Form({ isFormData, onFormSubmit }: FormProps) {
     email: "",
     name: "",
     rollNo: "",
-    universityRoll: "",
     branch: "CSE",
     year: "I", // Default year
     phone: "",
@@ -304,7 +302,6 @@ export function Form({ isFormData, onFormSubmit }: FormProps) {
     email: "",
     name: "",
     rollNo: "",
-    universityRoll: "",
     phone: "",
     branch: "",
     year: "",
@@ -365,12 +362,6 @@ export function Form({ isFormData, onFormSubmit }: FormProps) {
       newErrors.rollNo = "";
     }
 
-    if (!formData.universityRoll) {
-      newErrors.universityRoll = "University Roll Number is required.";
-      valid = false;
-    } else {
-      newErrors.universityRoll = "";
-    }
 
     if (!formData.phone) {
       newErrors.phone = "Phone Number is required.";
@@ -424,7 +415,7 @@ export function Form({ isFormData, onFormSubmit }: FormProps) {
         }
       } catch (error) {
         console.error("Error during submission:", error);
-        toast.error("An error occurred. Please try again.");
+        toast.error("Email or Roll No Already Exits");
       } finally {
         setIsSubmitting(false);
       }
@@ -458,7 +449,7 @@ export function Form({ isFormData, onFormSubmit }: FormProps) {
         <Input
           type="email"
           id="email"
-          placeholder="e.g (dsc@gmail.com)"
+          placeholder="e.g (abc@gmail.com)"
           value={formData.email}
           onChange={handleChange}
           className="text-gray-800 border-gray-500"
@@ -512,7 +503,7 @@ export function Form({ isFormData, onFormSubmit }: FormProps) {
         />
       </div>
 
-      <div className="grid w-full items-center gap-2">
+      {/* <div className="grid w-full items-center gap-2">
         <Label htmlFor="universityRoll" className="font-medium text-gray-800">
           University Roll No
         </Label>
@@ -520,12 +511,12 @@ export function Form({ isFormData, onFormSubmit }: FormProps) {
         <Input
           type="text"
           id="universityRoll"
-          placeholder="e.g (22EUCCS033)"
+          placeholder="e.g (optional) "
           value={formData.universityRoll}
           onChange={handleChange}
           className="text-gray-800 border-gray-500"
         />
-      </div>
+      </div> */}
 
       <div className="grid w-full items-center gap-2">
         <Label htmlFor="branch" className="font-medium text-gray-800">

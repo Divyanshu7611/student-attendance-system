@@ -221,7 +221,7 @@ interface FormData {
   email: string;
   name: string;
   rollNo: string;
-  universityRoll: string;
+
   branch: string;
   year: string;
   phone: string;

@@ -7,7 +7,6 @@ const formValidationSchema = Joi.object({
   email: Joi.string().email().required(),
   name: Joi.string().required(),
   rollNo: Joi.string().required(),
-  universityRoll: Joi.string().required(),
   branch: Joi.string().required(),
   year: Joi.string().required(),
   phone: Joi.string().required(),
@@ -29,16 +28,16 @@ export async function POST(req: NextRequest) {
     // Connect to MongoDB
     await connectMongoDB();
 
-    // Check if email or universityRoll already exists
+    // Check if email or rollno already exists
     const existingUser = await Form.findOne({
-      $or: [{ email: body.email }, { universityRoll: body.universityRoll }]
+      $or: [{ email: body.email }, { rollNo: body.rollNo }]
     });
 
     if (existingUser) {
-      const field = existingUser.email === body.email ? 'email' : 'universityRoll';
+      const field = existingUser.email === body.email ? 'email' : 'rollNo';
       return NextResponse.json(
         {
-          message: `A user with this ${field} already exists.`,
+          message: `A user already with this email or rollNo exist.`,
           success: false,
           field
         },
