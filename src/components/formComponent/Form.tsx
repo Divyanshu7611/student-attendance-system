@@ -170,12 +170,12 @@ export function Form({ isFormData, onFormSubmit }: FormProps) {
       <Toaster />
       <div className="flex justify-start items-center w-full">
 
-      <div className="flex justify-center items-center gap-5">
-        <img src="/DSCRTU.jpg" className="lg:w-20 lg:h-20 rounded-full w-10 h-10"/>
+      <div className="flex flex-col mx-auto justify-center items-center gap-5">
+        <img src="/DSCRTU.jpg" className="lg:w-20 lg:h-20 rounded-lg w-full h-32 object-fill"/>
         <div className="flex flex-col">
 
-        <h1 className="text-blue-900 font-bold underline text-xs lg:text-xl">Developer Student Club - RTU</h1>
-      <h1 className="text-blue-900 font-bold text-center text-xs lg:text-lg">DevDays: Android Edition</h1>
+        <h1 className="text-blue-900 font-bold text-sm lg:text-xl">Developer Student Club - RTU</h1>
+      <h1 className="text-yellow-600 font-bold text-center text-sm lg:text-lg">DevDays: Android Edition</h1>
         </div>
 
       </div>

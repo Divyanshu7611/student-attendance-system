@@ -34,7 +34,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)] min-w-screen bg-gray-900 text-white">
+    <div className="flex flex-col items-center justify-items-center min-h-screen p-6 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)] min-w-screen bg-gray-900 text-white">
       {formData ? (
         <div className="text-center mx-auto">
           <h2 className="text-2xl">Thank You for Registering!</h2>
@@ -70,7 +70,7 @@ export default function Home() {
       ) : (
         <Form isFormData={true} onFormSubmit={handleFormSubmit} />
       )}
-      <a href="https://thedivyanshu.me" className="text-white opacity-50 hover:scale-105 hover:to-blue-400">Developed By Divyanshu Sharma</a>
+      <a href="https://thedivyanshu.me" className="text-white text-sm opacity-50 hover:scale-105 hover:to-blue-400">Developed By Divyanshu Sharma</a>
     </div>
   );
 }
