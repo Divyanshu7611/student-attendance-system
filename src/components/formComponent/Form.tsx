@@ -34,6 +34,7 @@ export function Form({ isFormData, onFormSubmit }: FormProps) {
     branch: "CSE",
     year: "I", // Default year
     phone: "",
+    // universityRoll: "",
   });
 
   const [errors, setErrors] = useState({
@@ -43,6 +44,7 @@ export function Form({ isFormData, onFormSubmit }: FormProps) {
     phone: "",
     branch: "",
     year: "",
+    // universityRoll: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
