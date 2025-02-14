@@ -171,7 +171,7 @@ export function Form({ isFormData, onFormSubmit }: FormProps) {
       <div className="flex justify-start items-center w-full">
 
       <div className="flex flex-col mx-auto justify-center items-center gap-5">
-        <img src="/DSCRTU.jpg" className="lg:w-20 lg:h-20 rounded-lg w-full h-32 object-fill"/>
+        <img src="/DSCRTU.jpg" className="lg:w-20 lg:h-20 rounded-full w-18 h-18 object-fill"/>
         <div className="flex flex-col">
 
         <h1 className="text-blue-900 font-bold text-sm lg:text-xl">Developer Student Club - RTU</h1>
